@@ -30,7 +30,8 @@
 	<b><p> <a href = "rejestracja.php" > Załóż konto </a> </br> </br>
 	
 <?php
-	if(isset($_SESSION['blad_logowania'])) { echo "".$_SESSION['blad_logowania']; }
+	if(isset($_SESSION['blad_logowania']))  { echo $_SESSION['blad_logowania']; unset($_SESSION['blad_logowania']); }
+	if(isset($_SESSION['blad_koszyk'])) { echo $_SESSION['blad_koszyk'];  unset($_SESSION['blad_koszyk']); }
 	
 	require_once "connect.php";
 	mysqli_report(MYSQLI_REPORT_STRICT);		// wyłącz wyświetlanie błędów

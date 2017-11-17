@@ -6,11 +6,12 @@
 		header('Location: index.php');
 		exit();
 	}
-	else
+	/*else
 	{
 		unset($_SESSION['zalogowany']);
+		$_SESSION['uzytkownik_zalogowany'] = true;
 	}	
-	
+	*/
 // Usunięcie zmiennych pamietających dane wpisane do formularza
 	if(isset($_SESSION['fr_login']))  unset($_SESSION['fr_login']);
 	if(isset($_SESSION['fr_haslo']))  unset($_SESSION['fr_haslo']);
@@ -28,12 +29,13 @@
 	
 ?>
 
-<!DOCTYPE HTML>
+<!DOCTYPE HTML>		
 <html lang = "pl">
 <head>
-<meta charset = " utf-8 " />
-<meta http-equiv = " X-UA-Compatible " content = " IE = edge, chrome 1 " />
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome 1"/>
 <title> Sklep Internetowy </title>
+<link href="css/lightbox.css" rel="stylesheet">					<!-- Lightbox -->
 </head>
 
 <body>
@@ -41,11 +43,189 @@
 <?php
 	$uzytkownik_imie = $_SESSION['uzytkownik_imie'];
 	$uzytkownik_email = $_SESSION['uzytkownik_email'];
+	$id_uzytkownika = $_SESSION['uzytkownik_id'];
 	
 	echo "<p> Witaj ".$uzytkownik_imie."  (".$uzytkownik_email.")";
-	echo "<p><b> Stan Twojego koszyka: " ;//.
-	echo '<a href = "wyloguj.php"> <b><p> Wyloguj się </a> </p>';
+	
+	//echo "<p><b> Stan Twojego koszyka: ".$suma;
+	//echo '<a href = "wyloguj.php"> <b><p> Wyloguj się </a> </p>';
 ?>
 
+<?php
+	
+	require_once "connect.php";
+	mysqli_report(MYSQLI_REPORT_STRICT);		// wyłącz wyświetlanie błędów
+	
+	try
+	{
+		$polaczenie = new mysqli($host, $db_user, "$db_password", $db_name);
+			
+		if($polaczenie->connect_errno != 0)
+		{
+			throw new Exception(mysqli_connect_errno());
+		}
+		else
+		{	
+			/*$rezultat1 = $polaczenie -> query("SELECT SUM(CENA) FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
+			$wiersz = $rezultat1 -> fetch_assoc();
+			
+			if($wiersz['SUM(CENA)'] == NULL)  $suma = 0;
+			else $suma = $wiersz['SUM(CENA)'];
+			unset($rezultat1); unset($wiersz); */
+			$suma = SumaKoszyk($id_uzytkownika);
+			
+			echo "<p><b> Stan Twojego koszyka: ".$suma."zł";
+			echo '<a href = "wyloguj.php"> <b><p> Wyloguj się </a> </p>';
+			echo "<p> Czego potrzebujesz? <p/>";		
+									
+			WybierzKategorie();	
+						
+			if(isset($_GET['kat_id'])) { $kategoria_id = $_GET['kat_id']; unset($_GET['kat_id']); }
+			else {$kategoria_id = 0; }
+																							echo "kategoria: ".$kategoria_id;
+			PokazProdukty($kategoria_id);
+			
+			$polaczenie->close();
+		}
+	}
+	catch(Exception $blad_polaczenia)
+	{
+		echo '<span style = "color:red;"> <b><u> Błąd serwera! Prosimy spróbować za jakiś czas. Przepraszamy za niedogodności. </span></b><br/><br/></u>';
+		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
+	}
+	
+	
+
+/////////  FUNKCJE	
+	function SumaKoszyk($id_uzytkownika)
+	{
+		global $polaczenie;
+		
+		$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
+		
+		$suma = 0;
+		while($produkt = $rezultat1 -> fetch_assoc())
+			{
+				$ilosc = $produkt['ILOSC'];
+				$cena = $produkt['CENA'] * $produkt['ILOSC'];
+				$suma += $cena;
+				//return $suma;			
+			}
+		return $suma;
+	}	
+		
+		
+
+	
+	 function WybierzKategorie()
+	{
+		global $polaczenie;
+		$rezultat1 = $polaczenie -> query("SELECT * FROM kategoria");
+		
+		if(!$rezultat1) throw new Exception($polaczenie -> error);
+		else
+		{	
+			echo "<a href= 'zalogowany.php?kat_id=0'> Strona główna </a><br/>";
+			echo "<a href= 'koszyk.php'> KOSZYK </a> <br/>";
+			$ile_kategorii = $rezultat1 -> num_rows;
+			while($wiersz = $rezultat1->fetch_assoc())
+			{
+				
+				$kategoria_id = $wiersz['ID_KATEGORII']; 
+				$kategoria_nazwa = $wiersz['NAZWA'];
+				echo "<p>";
+				echo "<a href='zalogowany.php?kat_id=$kategoria_id'>$kategoria_nazwa</a>";
+			}
+			
+		}	
+		
+		$rezultat1->free();	
+		
+	}
+	
+	function PokazProdukty($kategoria_id)
+	{
+		global $polaczenie;
+		
+		if($kategoria_id)
+		{
+			$rezultat1 = $polaczenie -> query("SELECT * FROM produkt WHERE ID_KATEGORII = $kategoria_id");
+		}
+		else
+		{	
+			$rezultat1 = $polaczenie -> query("SELECT * FROM produkt");
+		}
+		
+		if(!$rezultat1) throw new Exception($polaczenie -> error);
+		else
+		{
+			$ile_produktow = $rezultat1 -> num_rows;
+			
+			echo "<p>Znaleziono ".$ile_produktow." produktów";
+			
+			while($wiersz = $rezultat1 -> fetch_assoc())
+			{
+				echo "<div>";
+				echo "<h2>";
+				$index = $wiersz['MODEL'];
+				
+				// zdjecie
+				$zdjecia_produktu = PobierzZdjeciaProduktu($index);
+				if(!empty($zdjecia_produktu))		
+				{	
+					$zdjecie = $zdjecia_produktu[0];
+				}
+				else 
+				{
+					$zdjecie = 'no-foto.jpg';
+				}
+				
+				echo "<img src=FOTY/mini/".$zdjecie."><br>";
+				
+				// nazwa -- link do strony produktu
+				echo " <a href='produkt.php?model=$index'>";
+				echo $wiersz['MODEL']."<br>";
+				echo "</a>";
+				
+				// cena
+				echo $wiersz['CENA']."zł <br>";
+			
+					//echo "<a rel ='lightbox[$index]' href='FOTY/$zdjecie'>";		// <a href="images/image-2.jpg" data-lightbox="roadtrip">Image #2</a>
+					//echo "<img src=FOTY/mini/".$zdjecie.">";
+					//echo "</a>";
+	
+				echo "</div>";
+			}
+		
+			$rezultat1->free();
+		}
+	}
+	
+	
+	
+	function PobierzZdjeciaProduktu($model)
+	{
+		$zdjecia = array();
+		
+		for($i = 1; $i < 10; $i++)
+		{
+			$nazwa = $model."-".$i.".jpg";		//['MODEL']-index   --->  ZD-971-x
+			$sciezka = "FOTY/mini/".$nazwa;	 
+			if(file_exists($sciezka))
+			{
+				$zdjecia[] = $nazwa;
+			}
+		}
+		
+		return $zdjecia;
+	}
+	
+?>
+	
+	
+<script src="js/lightbox-plus-jquery.js"></script>			<!-- Lightbox -->
+
+</body>
+</html>	   
 </body>
 </html>	   
