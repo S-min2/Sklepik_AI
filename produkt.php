@@ -10,7 +10,7 @@
 <body>
 <?php
 
-require "funkcje.php";
+//require "funkcje.php";
 require_once "connect.php";
 	
 $model = $_GET['model'];
@@ -18,6 +18,26 @@ $polaczenie = new mysqli($host, $db_user, "$db_password", $db_name);
 
 PokazProdukt($model);
 
+
+///// FUNKCJE //////////////////////////////
+function PobierzZdjeciaProduktu($model)
+	{
+		$zdjecia = array();
+		
+		for($i = 1; $i < 10; $i++)
+		{
+			$nazwa = $model."-".$i.".jpg";		//['MODEL']-index   --->  ZD-971-x
+			$sciezka = "FOTY/".$nazwa;	 
+			if(file_exists($sciezka))
+			{
+				$zdjecia[] = $nazwa;
+			}
+		}
+		
+		return $zdjecia;
+	}
+	
+	
 function PokazProdukt($model)
 	{
 		global $polaczenie;
@@ -43,13 +63,13 @@ function PokazProdukt($model)
 			}
 			echo "<h4> Parametry: ".$wiersz['PARAMETRY']."</h4>";
 			echo "<h5> Opis przedmiotu: ".$wiersz['OPIS']."</h5>";
+			echo "<br><br>";
+			echo "<a href = 'DoKoszyka.php?model=$index' > Dodaj do koszyka </a>";
 			echo "</div>";
 			
-		
-			$rezultat1->free();
+			$rezultat1->free(); $polaczenie -> close();
 		}
 	}
-	
 	
 ?>
 

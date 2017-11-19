@@ -1,13 +1,9 @@
-
-
 <?php
-
 
 	session_start(); 
 	require_once "connect.php";
 	$model = $_GET['model'];
 	
-	//if($_SESSION['uzytkownik_zalogowany'] == true) 
 	if(isset($_SESSION['zalogowany']) && ($_SESSION['zalogowany'] == true)) { unset($_SESSION['blad_koszyk']); $id_uzytkownika = $_SESSION['uzytkownik_id'];	}
 	else 
 	{
@@ -59,8 +55,7 @@
 					unset($rezultat3);
 				}
 			}
-			header("Location: zalogowany.php");
-			//header("Location: koszyk.php");	
+			header("Location: zalogowany.php");	
 		}
 	}
 	catch(Exception $blad_polaczenia)

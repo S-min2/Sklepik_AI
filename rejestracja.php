@@ -1,33 +1,6 @@
 <?php
 	session_start();	
 	
-	function SzukajCyfry(string $ciag)						// jezeli w ciagu znajduje sie cyfra zwraca false
-	{
-		$i = 0;
-		for($i = 0; $i < strlen($ciag); $i++)
-		{
-			if(($ciag{$i} >= 0) && ($ciag{$i} <= 9)) return false;
-		}
-		return true;
-	} 	
-	
-	
-	function SprawdzKodPocztowy(string $ciag)
-	{
-		if(preg_match("/^([0-9]{2})(-[0-9]{3})?$/i",$ciag)) return true;
-		else return false; 
-	}
-	
-	
-	function PolskiWzorzec(string $ciag)
-	{
-		$wzor = '/^[a-zA-ZąęćżźńłóśĄĆĘŁŃÓŚŹŻ\s]+$/';
-		
-		if(preg_match($wzor,$ciag) == true) return true;
-		else return false;
-	}	
-
-	
 	if(isset($_POST['haslo2']))		// byle jaka zmienna - czy formularz przeslany?
 	{
 		$formularz_OK = true;
@@ -233,19 +206,20 @@
 					if(!$rezultat5) throw new Exception($polaczenie -> error);
 					else 
 					{
-						$rezultat3->free();
+						unset($rezultat3);
 						$rezultat4->free();
-						$rezultat5->free();
-						header('Location:index.php');	
+						unset($rezultat5);
+						
 						echo "Twoje konto zostało utworzone. Zaloguj się by w pełni korzystać z serwisu ;)"; 
+						header('Location:index.php');	
 					}						
 				}
 				
 				$rezultat->free();
 				$rezultat2->free();
-				//$rezultat3->free();
-				//$rezultat4->free();
-				//$rezultat5->free();
+				unset($rezultat3);
+				$rezultat4->free();
+				unset($rezultat5);
 				
 				$polaczenie->close();
 			
@@ -259,7 +233,6 @@
 
 	}
 ?>
-
 
 <!DOCTYPE HTML>
 <html lang = "pl">
@@ -542,5 +515,34 @@
 	</form>
 	
 </body>
-
 </html>	   
+
+<?php
+///////////////////////////////////////////FUNKCJE /////////////////////////////////////
+	function SzukajCyfry(string $ciag)						// jezeli w ciagu znajduje sie cyfra zwraca false
+	{
+		$i = 0;
+		for($i = 0; $i < strlen($ciag); $i++)
+		{
+			if(($ciag{$i} >= 0) && ($ciag{$i} <= 9)) return false;
+		}
+		return true;
+	} 	
+	
+	
+	function SprawdzKodPocztowy(string $ciag)
+	{
+		if(preg_match("/^([0-9]{2})(-[0-9]{3})?$/i",$ciag)) return true;
+		else return false; 
+	}
+	
+	
+	function PolskiWzorzec(string $ciag)
+	{
+		$wzor = '/^[a-zA-ZąęćżźńłóśĄĆĘŁŃÓŚŹŻ\s]+$/';
+		
+		if(preg_match($wzor,$ciag) == true) return true;
+		else return false;
+	}	
+
+	?>

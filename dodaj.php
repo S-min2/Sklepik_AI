@@ -1,0 +1,42 @@
+<?php
+	
+	session_start();
+
+	if(!isset($_SESSION['zalogowany']))
+	{
+		header('Location: index.php');
+		exit();
+	}
+	
+	$ilosc = $_SESSION['ilosc_produktu_w_koszyku'];	
+	$ilosc += 1;									
+	$model = $_GET['model'];						
+	$id_uzytkownika = $_SESSION['uzytkownik_id'];	
+	
+	mysqli_report(MYSQLI_REPORT_STRICT);	
+	require_once "connect.php";
+	
+	try
+	{
+		$polaczenie = new mysqli($host, $db_user, "$db_password", $db_name);
+			
+		if($polaczenie->connect_errno != 0)
+		{
+			throw new Exception(mysqli_connect_errno());
+		}
+		else 
+		{
+			$rezultat2 = $polaczenie -> query("UPDATE koszyk SET ILOSC = $ilosc WHERE MODEL = '$model' AND ID_UZYTKOWNIKA = $id_uzytkownika");
+			unset($rezultat2);
+			$polaczenie -> close();
+		}
+	}
+	catch(Exception $blad_polaczenia)
+	{
+		echo '<span style = "color:red;"> <b><u> Błąd serwera! Prosimy spróbować za jakiś czas. Przepraszamy za niedogodności. </span></b><br/><br/></u>';
+		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
+	}
+
+	header("Location: koszyk.php");
+	
+?>

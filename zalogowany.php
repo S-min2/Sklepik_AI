@@ -6,12 +6,7 @@
 		header('Location: index.php');
 		exit();
 	}
-	/*else
-	{
-		unset($_SESSION['zalogowany']);
-		$_SESSION['uzytkownik_zalogowany'] = true;
-	}	
-	*/
+	
 // Usunięcie zmiennych pamietających dane wpisane do formularza
 	if(isset($_SESSION['fr_login']))  unset($_SESSION['fr_login']);
 	if(isset($_SESSION['fr_haslo']))  unset($_SESSION['fr_haslo']);
@@ -26,7 +21,6 @@
 	if(isset($_SESSION['fr_email']))  unset($_SESSION['fr_email']);
 	if(isset($_SESSION['fr_telefon']))  unset($_SESSION['fr_telefon']);
 	if(isset($_SESSION['fr_regulamin']))  unset($_SESSION['fr_regulamin']);
-	
 ?>
 
 <!DOCTYPE HTML>		
@@ -46,13 +40,7 @@
 	$id_uzytkownika = $_SESSION['uzytkownik_id'];
 	
 	echo "<p> Witaj ".$uzytkownik_imie."  (".$uzytkownik_email.")";
-	
-	//echo "<p><b> Stan Twojego koszyka: ".$suma;
-	//echo '<a href = "wyloguj.php"> <b><p> Wyloguj się </a> </p>';
-?>
 
-<?php
-	
 	require_once "connect.php";
 	mysqli_report(MYSQLI_REPORT_STRICT);		// wyłącz wyświetlanie błędów
 	
@@ -66,12 +54,6 @@
 		}
 		else
 		{	
-			/*$rezultat1 = $polaczenie -> query("SELECT SUM(CENA) FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
-			$wiersz = $rezultat1 -> fetch_assoc();
-			
-			if($wiersz['SUM(CENA)'] == NULL)  $suma = 0;
-			else $suma = $wiersz['SUM(CENA)'];
-			unset($rezultat1); unset($wiersz); */
 			$suma = SumaKoszyk($id_uzytkownika);
 			
 			echo "<p><b> Stan Twojego koszyka: ".$suma."zł";
@@ -93,8 +75,6 @@
 		echo '<span style = "color:red;"> <b><u> Błąd serwera! Prosimy spróbować za jakiś czas. Przepraszamy za niedogodności. </span></b><br/><br/></u>';
 		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
 	}
-	
-	
 
 /////////  FUNKCJE	
 	function SumaKoszyk($id_uzytkownika)
@@ -113,11 +93,9 @@
 			}
 		return $suma;
 	}	
-		
-		
 
 	
-	 function WybierzKategorie()
+	function WybierzKategorie()
 	{
 		global $polaczenie;
 		$rezultat1 = $polaczenie -> query("SELECT * FROM kategoria");
@@ -142,6 +120,7 @@
 		$rezultat1->free();	
 		
 	}
+	
 	
 	function PokazProdukty($kategoria_id)
 	{
@@ -189,18 +168,12 @@
 				
 				// cena
 				echo $wiersz['CENA']."zł <br>";
-			
-					//echo "<a rel ='lightbox[$index]' href='FOTY/$zdjecie'>";		// <a href="images/image-2.jpg" data-lightbox="roadtrip">Image #2</a>
-					//echo "<img src=FOTY/mini/".$zdjecie.">";
-					//echo "</a>";
-	
 				echo "</div>";
 			}
 		
 			$rezultat1->free();
 		}
 	}
-	
 	
 	
 	function PobierzZdjeciaProduktu($model)
@@ -219,7 +192,6 @@
 		
 		return $zdjecia;
 	}
-	
 ?>
 	
 	

@@ -2,11 +2,10 @@
 <html lang = "pl">
 <head>
 <meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome 1"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome 1"/>
 <title> Sklep Internetowy </title>
 <link href="css/lightbox.css" rel="stylesheet">					<!-- Lightbox -->
 </head>
-
 
 <?php
 	session_start();	
@@ -36,8 +35,6 @@
 	require_once "connect.php";
 	mysqli_report(MYSQLI_REPORT_STRICT);		// wyłącz wyświetlanie błędów
 	
-	
-	
 	try
 	{
 		$polaczenie = new mysqli($host, $db_user, "$db_password", $db_name);
@@ -48,15 +45,11 @@
 		}
 		else
 		{	
-			echo "<p> Czego potrzebujesz? <p/>";		
-									
-			WybierzKategorie();	
-						
+			echo "<p> Czego potrzebujesz? <p/>";						
+			WybierzKategorie();		
 			if(isset($_GET['kat_id'])) { $kategoria_id = $_GET['kat_id']; unset($_GET['kat_id']); }
-			else {$kategoria_id = 0; }
-																							echo "kategoria: ".$kategoria_id;
+			else {$kategoria_id = 0; }																	//echo "kategoria: ".$kategoria_id;
 			PokazProdukty($kategoria_id);
-			
 			$polaczenie->close();
 		}
 	}
@@ -66,13 +59,12 @@
 		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
 	}
 
-	
-	
 /////////  FUNKCJE	
 	
 	 function WybierzKategorie()
 	{
 		global $polaczenie;
+		
 		$rezultat1 = $polaczenie -> query("SELECT * FROM kategoria");
 		
 		if(!$rezultat1) throw new Exception($polaczenie -> error);
@@ -88,12 +80,10 @@
 				echo "<p>";
 				echo "<a href='index.php?kat_id=$kategoria_id'>$kategoria_nazwa</a>";
 			}
-			
 		}	
-		
 		$rezultat1->free();	
-		
 	}
+	
 	
 	function PokazProdukty($kategoria_id)
 	{
@@ -148,7 +138,6 @@
 	
 				echo "</div>";
 			}
-		
 			$rezultat1->free();
 		}
 	}
@@ -173,7 +162,6 @@
 	}
 	
 ?>
-	
 	
 <script src="js/lightbox-plus-jquery.js"></script>			<!-- Lightbox -->
 
