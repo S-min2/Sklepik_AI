@@ -167,6 +167,13 @@
 			}
 			else
 			{
+				$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+				$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+				if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+				else 
+				{	
+					unset($rez); unset($rez2);
+				}
 				
 // sprawdz czy jest taki email:
 				$rezultat = $polaczenie -> query("SELECT ID_UZYTKOWNIKA FROM uzytkownik WHERE EMAIL = '$email'");

@@ -26,6 +26,14 @@
 		}
 		else 
 		{
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
+			
 			if($ilosc <= 0) 
 			{
 				$rezultat2 = $polaczenie -> query("DELETE FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika AND MODEL = '$model'");

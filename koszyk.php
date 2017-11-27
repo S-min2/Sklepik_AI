@@ -23,24 +23,38 @@
 		else
 		{
 	
-			$id_uzytkownika = $_SESSION['uzytkownik_id']; 
-			$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
+			
+			$id_uzytkownika = $_SESSION['uzytkownik_id']; //echo $id_uzytkownika;
+			$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika"); //print_r($rezultat1);
 			
 			if(!$rezultat1) throw new Ecxeption(error);
 			else 
 			{
-				$wiersz = $rezultat1 -> fetch_assoc();					//var_dump($wiersz); print_r($wiersz); 
+				//$wiersz = $rezultat1 -> fetch_assoc();					 
+																			
 				$suma = 0;
-				
+																		
 					while($produkt = $rezultat1 -> fetch_assoc())
 					{
-																			//print_r($produkt); echo"<p>";
+																	
 						$model = $produkt['MODEL'];
-						$ilosc = $produkt['ILOSC'];
-						$cena = $produkt['CENA'] * $produkt['ILOSC'];
+						
+						$rezultat2 = $polaczenie -> query("SELECT TYTUL FROM produkt WHERE MODEL = '$model'");
+						$tytul = $rezultat2 -> fetch_assoc();
+						$nazwa = $tytul['TYTUL'];
+						
+						$ilosc = $produkt['ILOSC']; 
+						$cena = $produkt['CENA'] * $produkt['ILOSC']; 
 						$suma += $cena;
 						
-						echo $model; echo "<br>";
+						echo $nazwa; echo "<br>";
 						echo $ilosc;
 						$_SESSION['ilosc_produktu_w_koszyku'] = $ilosc;
 						echo "<a href= 'dodaj.php?model=$model'> + </a>";

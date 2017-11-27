@@ -3,7 +3,7 @@
 	require_once "connect.php";
 
 	session_start();
-
+//var_dump($_SESSION['adres']);
 	try
 		{
 			$polaczenie = new mysqli($host, $db_user, "$db_password", $db_name);
@@ -15,54 +15,67 @@
 			else
 			{
 
-				$id_uzytkownika = $_SESSION['uzytkownik_id']; 
-				$_SESSION['adres'] = NULL;
+				$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+				$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+				if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+				else 
+				{	
+					unset($rez); unset($rez2);
+				}
+			
+				$id_uzytkownika = $_SESSION['uzytkownik_id']; //echo $id_uzytkownika;
+				//$_SESSION['adres'] = NULL;
 				
-				$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
+				$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika"); 
 				
 				if(!$rezultat1) throw new Ecxeption(error);
 				else 
 				{
-					$wiersz = $rezultat1 -> fetch_assoc();					
+					//$wiersz = $rezultat1 -> fetch_assoc();					
 					$suma = 0;
 					$zamowienie = '';
 						while($produkt = $rezultat1 -> fetch_assoc())
 						{
 																			
-							$model = $produkt['MODEL'];
-							$ilosc = $produkt['ILOSC'];
+							$model = $produkt['MODEL'];								 //echo $model;
+							$ilosc = $produkt['ILOSC'];									//echo $ilosc;
 							$cena = $produkt['CENA'] * $produkt['ILOSC'];
 							$suma += $cena;
 							
 							$zamowienie = $zamowienie.$model;
 							$zamowienie = $zamowienie."x";
 							$zamowienie = $zamowienie.$ilosc;
-							$zamowienie = $zamowienie.".";
+							$zamowienie = $zamowienie."/";				
 						}	
 						
 						$zamowienie = $zamowienie."==";
 						$zamowienie = $zamowienie.$suma;													
 						
-						$odbiorca = $_SESSION['adres'];
+						$odbiorca = $_SESSION['adres']; //var_dump($odbiorca); 
+						$adres = $odbiorca['IMIE']; 	
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['NAZWISKO'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['ULICA'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['NR BUDYNKU'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['KOD POCZTOWY'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['MIEJSCOWOSC'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['WOJEWODZTWO'];
+						$adres = $adres."/";
+						$adres = $adres.$odbiorca['TELEFON'];
+						$adres = $adres."."; 				
+
+						/*$adres = sprintf("'%s'/'%s'/'%s'/'%s'/'%s'/'%s'/'%s'/'%s'.", $adres = $odbiorca['NAZWISKO'], $adres = $odbiorca['ULICA'], 
+																					$adres = $odbiorca['NR BUDYNKU'],
+																					 $adres = $odbiorca['KOD POCZTOWY'], $adres = $odbiorca['MIEJSCOWOSC'], 
+																					 $adres = $odbiorca['WOJEWODZTWO'], $adres = $odbiorca['TELEFON']);		*/
+										//echo $adres;
 						
-						$adres = $odbiorca['imie'];
-						$adres = $adres."/";
-						$adres = $odbiorca['nazwisko'];
-						$adres = $adres."/";
-						$adres = $odbiorca['ulica'];
-						$adres = $adres."/";
-						$adres = $odbiorca['nr_budynku'];
-						$adres = $adres."/";
-						$adres = $odbiorca['kod_pocztowy'];
-						$adres = $adres."/";
-						$adres = $odbiorca['miejscowosc'];
-						$adres = $adres."/";
-						$adres = $odbiorca['wojewodztwo'];
-						$adres = $adres."/";
-						$adres = $odbiorca['telefon'];
-						$adres = $adres.".";
-						
-					$rezultat2 = $polaczenie -> query("INSERT INTO zamowienie (ID_FAKTURY, ID_UZYTKOWNIKA, MODEL, SUMA, ADRES) VALUES (NULL, $id_uzytkownika, '$zamowienie', $suma, '$adres')");
+					$rezultat2 = $polaczenie -> query("INSERT INTO zamowienie (ID_FAKTURY, ID_UZYTKOWNIKA, MODEL, SUMA, ADRES) VALUES ('NULL', $id_uzytkownika, '$zamowienie', $suma, '$adres')");
 					if(!$rezultat2) throw new Exception(error);
 					else
 					{	$rezultat3 = $polaczenie -> query("DELETE FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");

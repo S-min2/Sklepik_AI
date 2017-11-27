@@ -54,6 +54,14 @@
 		}
 		else
 		{	
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
+			
 			$suma = SumaKoszyk($id_uzytkownika);
 			
 			echo "<p><b> Stan Twojego koszyka: ".$suma."zł";
@@ -64,10 +72,10 @@
 						
 			if(isset($_GET['kat_id'])) { $kategoria_id = $_GET['kat_id']; unset($_GET['kat_id']); }
 			else {$kategoria_id = 0; }
-																							echo "kategoria: ".$kategoria_id;
+																							//echo "kategoria: ".$kategoria_id;
 			PokazProdukty($kategoria_id);
 			
-			$polaczenie->close();
+			//$polaczenie->close();
 		}
 	}
 	catch(Exception $blad_polaczenia)
@@ -158,12 +166,12 @@
 				{
 					$zdjecie = 'no-foto.jpg';
 				}
-				
-				echo "<img src=FOTY/mini/".$zdjecie."><br>";
-				
+				//echo $zdjecie;
+				echo "<img src=ZDJECIA/mini/".$zdjecie."><br>";
+				//echo "<img src=ZDJECIA/mini/CAVRA-3.jpg>";
 				// nazwa -- link do strony produktu
 				echo " <a href='produkt.php?model=$index'>";
-				echo $wiersz['MODEL']."<br>";
+				echo $wiersz['TYTUL']."<br>";
 				echo "</a>";
 				
 				// cena
@@ -172,6 +180,7 @@
 			}
 		
 			$rezultat1->free();
+			//$polaczenie->close();
 		}
 	}
 	
@@ -183,7 +192,7 @@
 		for($i = 1; $i < 10; $i++)
 		{
 			$nazwa = $model."-".$i.".jpg";		//['MODEL']-index   --->  ZD-971-x
-			$sciezka = "FOTY/mini/".$nazwa;	 
+			$sciezka = "ZDJECIA/mini/".$nazwa;	 //echo $sciezka;
 			if(file_exists($sciezka))
 			{
 				$zdjecia[] = $nazwa;
@@ -192,6 +201,8 @@
 		
 		return $zdjecia;
 	}
+	
+	$polaczenie->close();
 ?>
 	
 	

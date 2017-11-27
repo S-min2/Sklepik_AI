@@ -23,7 +23,14 @@
 		}
 		else
 		{	
-	
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
+			
 			$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika AND MODEL = '$model'");
 			
 			if(!$rezultat1)  throw new Exception($polaczenie -> error);
@@ -34,7 +41,7 @@
 				
 				if($liczba_wierszy > 0)
 				{															
-					 $ilosc = $wiersz['ILOSC'];echo $wiersz['ILOSC'];
+					 $ilosc = $wiersz['ILOSC']; echo $wiersz['ILOSC'];
 					 $cena = $wiersz['CENA']; echo $cena;
 				
 					if( $ilosc > 0)
@@ -55,6 +62,7 @@
 					unset($rezultat3);
 				}
 			}
+			$polaczenie->close();
 			header("Location: zalogowany.php");	
 		}
 	}

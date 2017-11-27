@@ -45,11 +45,19 @@
 		}
 		else
 		{	
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
 			echo "<p> Czego potrzebujesz? <p/>";						
 			WybierzKategorie();		
 			if(isset($_GET['kat_id'])) { $kategoria_id = $_GET['kat_id']; unset($_GET['kat_id']); }
 			else {$kategoria_id = 0; }																	//echo "kategoria: ".$kategoria_id;
 			PokazProdukty($kategoria_id);
+			
 			$polaczenie->close();
 		}
 	}
@@ -122,20 +130,14 @@
 					$zdjecie = 'no-foto.jpg';
 				}
 				
-				echo "<img src=FOTY/mini/".$zdjecie."><br>";
-				
+				echo "<img src=ZDJECIA/mini/".$zdjecie.">";																
 				// nazwa -- link do strony produktu
 				echo " <a href='produkt.php?model=$index'>";
-				echo $wiersz['MODEL']."<br>";
+				echo $wiersz['TYTUL']."<br>";
 				echo "</a>";
 				
 				// cena
 				echo $wiersz['CENA']."zł <br>";
-			
-					//echo "<a rel ='lightbox[$index]' href='FOTY/$zdjecie'>";		// <a href="images/image-2.jpg" data-lightbox="roadtrip">Image #2</a>
-					//echo "<img src=FOTY/mini/".$zdjecie.">";
-					//echo "</a>";
-	
 				echo "</div>";
 			}
 			$rezultat1->free();
@@ -151,7 +153,7 @@
 		for($i = 1; $i < 10; $i++)
 		{
 			$nazwa = $model."-".$i.".jpg";		//['MODEL']-index   --->  ZD-971-x
-			$sciezka = "FOTY/mini/".$nazwa;	 
+			$sciezka = "ZDJECIA/mini/".$nazwa;	 
 			if(file_exists($sciezka))
 			{
 				$zdjecia[] = $nazwa;

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>		
+﻿<!DOCTYPE HTML>		
 <html lang = "pl">
 
 <head>
@@ -27,7 +27,7 @@ function PobierzZdjeciaProduktu($model)
 		for($i = 1; $i < 10; $i++)
 		{
 			$nazwa = $model."-".$i.".jpg";		//['MODEL']-index   --->  ZD-971-x
-			$sciezka = "FOTY/".$nazwa;	 
+			$sciezka = "ZDJECIA/".$nazwa;	 
 			if(file_exists($sciezka))
 			{
 				$zdjecia[] = $nazwa;
@@ -42,7 +42,14 @@ function PokazProdukt($model)
 	{
 		global $polaczenie;
 		
-		
+		$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+		$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+		if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+		{	
+			unset($rez); unset($rez2);
+		}
+			
 		$rezultat1 = $polaczenie -> query("SELECT * FROM produkt WHERE MODEL = '$model'");
 
 		if(!$rezultat1) throw new Exception($polaczenie -> error);
@@ -51,14 +58,14 @@ function PokazProdukt($model)
 			$wiersz = $rezultat1 -> fetch_assoc();
 			
 			echo "<div>";
-			echo "<h2>".$wiersz['MODEL']."</h2>";
+			echo "<h2>".$wiersz['TYTUL']."</h2>";
 			echo "<h3> Cena: ".$wiersz['CENA']." zł</h2>";
 				
 			$index = $wiersz['MODEL'];
 			foreach(PobierzZdjeciaProduktu($index) as $zdjecie)
 			{
-				echo "<a rel ='lightbox[$index]' href='FOTY/$zdjecie'>";		// <a href="images/image-2.jpg" data-lightbox="roadtrip">Image #2</a>
-				echo "<img src=FOTY/mini/".$zdjecie.">";
+				echo "<a rel ='lightbox[$index]' href='ZDJECIA/$zdjecie'>";	//echo $zdjecie;	// <a href="images/image-2.jpg" data-lightbox="roadtrip">Image #2</a>
+				echo "<img src=ZDJECIA/".$zdjecie.">";
 				echo "</a>";
 			}
 			echo "<h4> Parametry: ".$wiersz['PARAMETRY']."</h4>";
@@ -67,7 +74,8 @@ function PokazProdukt($model)
 			echo "<a href = 'DoKoszyka.php?model=$index' > Dodaj do koszyka </a>";
 			echo "</div>";
 			
-			$rezultat1->free(); $polaczenie -> close();
+			$rezultat1->free(); 
+			$polaczenie -> close();
 		}
 	}
 	

@@ -22,7 +22,14 @@
 		}
 		else
 		{
-	
+			$rez = $polaczenie -> query('SET CHARACTER SET UTF8');
+			$rez2 = $polaczenie -> query('SET collation_connection = UTF8_general_ci');
+			if(!$rez || !$rez2) throw new Exception($polaczenie -> error);
+			else 
+			{	
+				unset($rez); unset($rez2);
+			}
+			
 			$id_uzytkownika = $_SESSION['uzytkownik_id'];
 			
 			$rezultat1 = $polaczenie -> query("SELECT * FROM koszyk WHERE ID_UZYTKOWNIKA = $id_uzytkownika");
@@ -31,7 +38,7 @@
 			if(!$rezultat1 || !$rezultat2) throw new Ecxeption(error);
 			else
 			{
-				$adres = $rezultat2 -> fetch_assoc();
+				$adresat = $rezultat2 -> fetch_assoc();	
 																		
 				echo "<p> <b> Zamawiane przedmioty: </b><br><br> ";
 				
@@ -40,11 +47,16 @@
 					{
 						
 						$model = $produkt['MODEL'];
+						
+						$rezultat3 = $polaczenie -> query("SELECT TYTUL FROM produkt WHERE MODEL = '$model'");
+						$wiersz = $rezultat3 -> fetch_assoc();
+						$nazwa = $wiersz['TYTUL'];
+						
 						$ilosc = $produkt['ILOSC'];
 						$cena = $produkt['CENA'] * $produkt['ILOSC'];
 						$suma += $cena;
 						
-						echo $model; echo "  x  "; echo $ilosc; echo "...........".$cena." PLN <br>";
+						echo $nazwa; echo "  x  "; echo $ilosc; echo "...........".$cena." PLN <br>";
 					}
 					
 				echo "<b><br>Łącznie do zapłaty: ".$suma."zł </b><p>";
@@ -52,43 +64,53 @@
 				
 				
 				echo "<p><b>Dane do wysyłki: </b> <br>    ";
-				echo " <a href= 'dane_wysyłki.php'> Zmień adres wysyłki </a></br></br>";
-				//$dane_wysyłki = $_SESSION['adres'];
-				if(!isset($_SESSION['dane_wysyłki'])) 
+				echo " <a href= 'dane_wysyłki.php'> Zmień adres wysyłki </a></br></br>";	
+				
+				
+				if(isset($_SESSION['dane_wysylki'])) 
 				{
-					$imie = $adres['IMIE'];
-					$nazwisko = $adres['NAZWISKO'];
-					$ulica = $adres['ULICA'];
-					$nr_domu = $adres['NR BUDYNKU'];
-					$kod_pocztowy = $adres['KOD POCZTOWY'];
-					$miejscowosc = $adres['MIEJSCOWOSC'];
-					$wojewodztwo = $adres['WOJEWODZTWO'];
-					$telefon = $adres['TELEFON'];
+					$dane_wysylki = $_SESSION['dane_wysylki'];				//var_dump($dane_wysylki);
 					
-					$_SESSION['adres'] = $adres;
+					$imie = $dane_wysylki['IMIE'];
+					$nazwisko = $dane_wysylki['NAZWISKO'];
+					$ulica = $dane_wysylki['ULICA'];
+					$nr_domu = $dane_wysylki['NR BUDYNKU'];
+					$kod_pocztowy = $dane_wysylki['KOD POCZTOWY'];
+					$miejscowosc = $dane_wysylki['MIEJSCOWOSC'];
+					$wojewodztwo = $dane_wysylki['WOJEWODZTWO'];	
+					$telefon = $dane_wysylki['TELEFON'];
+					$email = $dane_wysylki['EMAIL'];
+					
+					$_SESSION['adres'] = $dane_wysylki;
+					unset($_SESSION['dane_wysylki']);
 				}
 				else
 				{	
-					$imie = $dane_wysyłki['IMIE'];
-					$nazwisko = $dane_wysyłki['NAZWISKO'];
-					$ulica = $dane_wysyłki['ULICA'];
-					$nr_domu = $dane_wysyłki['NR BUDYNKU'];
-					$kod_pocztowy = $dane_wysyłki['KOD POCZTOWY'];
-					$miejscowosc = $dane_wysyłki['MIEJSCOWOSC'];
-					$wojewodztwo = $dane_wysyłki['WOJEWODZTWO'];	
-					$telefon = $dane_wysyłki['TELEFON'];
+					$imie = $adresat['IMIE'];
+					$nazwisko = $adresat['NAZWISKO'];
+					$ulica = $adresat['ULICA'];
+					$nr_domu = $adresat['NR BUDYNKU'];
+					$kod_pocztowy = $adresat['KOD POCZTOWY'];
+					$miejscowosc = $adresat['MIEJSCOWOSC'];
+					$wojewodztwo = $adresat['WOJEWODZTWO'];
+					$telefon = $adresat['TELEFON'];
+					//$email = $adresat['EMAIL'];
 					
-					$_SESSION['adres'] = $dane_wysyłki;
+					$_SESSION['adres'] = $adresat;
 				}
 				
-				echo $imie, $nazwisko; echo "<br>";
-				echo "ul. ".$ulica, $nr_domu; echo "<br>";
+				echo $imie." ".$nazwisko; echo "<br>";
+				echo "ul.".$ulica, $nr_domu; echo "<br>";
 				echo $kod_pocztowy; echo" ".$miejscowosc; echo "<br>";
-				echo "woj. ".$wojewodztwo;  echo "<br>";
+				echo "woj.".$wojewodztwo;  echo "<br>";
+				//echo "adres e-mail: ".$email;  echo "<br>";
 				echo "tel.".$telefon;  
 
 			}
-				echo " <p><a href= 'zamowienie.php' > Zamawiam i płacę </a>";
+				$rezultat1 -> free();
+				$rezultat2 ->free();
+				$polaczenie->close();
+				echo " <p><a href= 'zamowienie.php' > Zamawiam i płacę </a>"; 
 		}
 	}
 	catch(Exception $blad_polaczenia)
@@ -96,4 +118,6 @@
 		echo '<span style = "color:red;"> <b><u> Błąd serwera! Prosimy spróbować za jakiś czas. Przepraszamy za niedogodności. </span></b><br/><br/></u>';
 		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
 	}
+	
+	//var_dump($_SESSION['adres']);
 ?>

@@ -125,7 +125,7 @@
 // POPRAWNIE WYPEŁNIONY FORMULARZ !!! 
 		if($formularz_OK == true) 
 		{
-			$dane_wysylki['imie'] 		   =  $_POST['imie'];
+			/*$dane_wysylki['imie'] 		   =  $_POST['imie'];
 			$dane_wysylki['nazwisko'] 	   =  $_POST['nazwisko']; 
 			$dane_wysylki['ulica'] 	   =  $_POST['ulica'];
 			$dane_wysylki['nr_budynku']   =  $_POST['nr_budynku'];
@@ -133,9 +133,23 @@
 			$dane_wysylki['miejscowosc']  =  $_POST['miejscowosc']; 
 			$dane_wysylki['wojewodztwo']  =  $_POST['wojewodztwo'];
 			$dane_wysylki['telefon']	   =  $_POST['telefon'];
-			$dane_wysylki['email'] 	   =  $_POST['email'];
+			$dane_wysylki['email'] 	   =  $_POST['email'];*/
 			
-			$_SESSION['dane_wysylki'] = $adres;
+			
+			
+			$adres = array( 'IMIE'=> $_POST['imie'],
+							'NAZWISKO' => $_POST['nazwisko'],
+							'ULICA' =>  $_POST['ulica'],
+							'NR BUDYNKU' => $_POST['nr_budynku'],
+							'KOD POCZTOWY' => $_POST['kod_pocztowy'],
+							'MIEJSCOWOSC' => $_POST['miejscowosc'],
+							'WOJEWODZTWO' => $_POST['wojewodztwo'],
+							'TELEFON' => $_POST['telefon'],
+							'EMAIL' => $_POST['email'] );
+							
+			$_SESSION['dane_wysylki'] = $adres; //var_dump($adres);
+			//var_dump($_SESSION['dane_wysylki']);
+			
 			header("Location: podsumowanie.php");
 		}
 	}
