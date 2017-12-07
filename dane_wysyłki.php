@@ -163,7 +163,7 @@
 	<meta charset = " utf-8 " />
 	<meta http-equiv = " X-UA-Compatible " content = " IE = edge, chrome 1 " />
 	<title> Sklep Internetowy - Rejestracja </title>
-
+	<link rel= "stylesheet" href= "style.css" type= "text/css" />
 	<script src='https://www.google.com/recaptcha/api.js'></script>			
 
 	<style>
@@ -178,9 +178,9 @@
 </head>
 
 <body>
-    
+    <div id = "adres">
 	<form method = "post">
-		
+		<br/>
 		<b> Dane do wysyłki: </b> <p> 
 		
 		Imię: 		  <br/><input type = "text" value = "<?php 
@@ -347,4 +347,6 @@
 	
 					<br/> <input type = "submit" value = "Użyj tego adresu" />
 </form>
+</div>
 </body>	
+</html>

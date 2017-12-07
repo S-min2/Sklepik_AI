@@ -1,3 +1,17 @@
+<!DOCTYPE HTML>		
+<html lang = "pl">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome 1"/>
+<title> Sklep Internetowy </title>
+<link href="css/lightbox.css" rel="stylesheet">					<!-- Lightbox -->
+<link rel= "stylesheet" href= "style.css" type= "text/css" />
+</head>
+ 
+<body>
+
+<div id = "podsumowanie">
+<div id = "paragon">
 <?php
 
 	session_start();
@@ -59,14 +73,13 @@
 						echo $nazwa; echo "  x  "; echo $ilosc; echo "...........".$cena." PLN <br>";
 					}
 					
+				echo "...........................................................................................";
 				echo "<b><br>Łącznie do zapłaty: ".$suma."zł </b><p>";
 				$_SESSION['suma'] = $suma;
 				
 				
-				echo "<p><b>Dane do wysyłki: </b> <br>    ";
-				echo " <a href= 'dane_wysyłki.php'> Zmień adres wysyłki </a></br></br>";	
-				
-				
+				echo "<p><b><br/>Dane do wysyłki: </b> <br>    ";
+				echo " <div class= 'button'> <a href= 'dane_wysyłki.php'> Zmień adres wysyłki </a> </div>";
 				if(isset($_SESSION['dane_wysylki'])) 
 				{
 					$dane_wysylki = $_SESSION['dane_wysylki'];				//var_dump($dane_wysylki);
@@ -110,7 +123,8 @@
 				$rezultat1 -> free();
 				$rezultat2 ->free();
 				$polaczenie->close();
-				echo " <p><a href= 'zamowienie.php' > Zamawiam i płacę </a>"; 
+				
+				echo " <p> <br/> <div class= 'button2'> <a href= 'zamowienie.php' > Zamawiam i płacę </div> </a>"; 
 		}
 	}
 	catch(Exception $blad_polaczenia)
@@ -121,3 +135,6 @@
 	
 	//var_dump($_SESSION['adres']);
 ?>
+</div>
+</div>
+</body>

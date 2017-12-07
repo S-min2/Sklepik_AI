@@ -1,3 +1,16 @@
+<!DOCTYPE HTML>		
+<html lang = "pl">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome 1"/>
+<title> Sklep Internetowy </title>
+<link href="css/lightbox.css" rel="stylesheet">			
+<link rel= "stylesheet" href= "style.css" type= "text/css" />		<!-- Lightbox -->
+</head>
+<body>
+<div id = "container">
+<table>
 <?php
 
 	session_start();
@@ -36,9 +49,7 @@
 			
 			if(!$rezultat1) throw new Ecxeption(error);
 			else 
-			{
-				//$wiersz = $rezultat1 -> fetch_assoc();					 
-																			
+			{															
 				$suma = 0;
 																		
 					while($produkt = $rezultat1 -> fetch_assoc())
@@ -54,25 +65,39 @@
 						$cena = $produkt['CENA'] * $produkt['ILOSC']; 
 						$suma += $cena;
 						
-						echo $nazwa; echo "<br>";
-						echo $ilosc;
+						echo "<tr>";
+						echo "<td>";
+						echo "&nbsp <img src=ZDJECIA/mini/".$model."-1.jpg>";	
+						echo "</td> <td> <div id = 'podpis'>";
+						echo "&nbsp &nbsp <h2>"; echo $nazwa; 
+						echo "<br> &nbsp &nbsp".$cena." zł";	
+						echo " </h2> </td> <td> <div id = 'podpis'> <br/> <h1>";		//podpis
+						echo $ilosc." szt. </h1> </td> <td>";
 						$_SESSION['ilosc_produktu_w_koszyku'] = $ilosc;
-						echo "<a href= 'dodaj.php?model=$model'> + </a>";
-						echo "<a href= 'usun.php?model=$model'> - </a>"; echo "<br>";
-						echo $cena;	echo "<br>";
+						echo "<div class = 'button'>";
+						echo "<a href= 'dodaj.php?model=$model'> + </a> &nbsp &nbsp";
+						echo "</div>";
+						echo "<div class = 'button'>";
+						echo "<a href= 'usun.php?model=$model'> - </a>";
+						echo "</div> </div>";
+						echo "</td> </tr>";
+						
 					}	
+					echo "</table>";
 					
-					if($suma == 0) echo "Twój koszyk jest pusty :(" ;
+					if($suma == 0) { echo "<span style= 'font-size: 22px'> <span style= 'color: red'>"; echo "<h1> Twój koszyk jest pusty :( </h1>" ; }
 					else
 					{
-						echo "Łącznie do zapłaty: ".$suma."zł";
+						echo "<span style= 'font-size: 32px'> <span style= 'color: red'>";
+						echo "<br/> Łącznie do zapłaty: <b>".$suma."zł </b> </span> </span>";
 						$_SESSION['suma'] = $suma;
-						echo " <br><br>";
+						echo " <br><br> <div class ='button2'> ";
 						echo " <a href= 'podsumowanie.php?id=$id_uzytkownika' > Zamawiam </a>";
+						echo "</div>";
 					}
 				
-				echo "<br><br>";
-				echo "<a href= 'zalogowany.php?kat_id=0'> Strona główna </a><br/>";
+				echo "<br/> <br/> <br/> <br/> <div class ='button2'> ";
+				echo "<a href= 'zalogowany.php?kat_id=0'> Strona główna </a> <br/> </div>";
 				$rezultat1 -> free();
 				$polaczenie -> close();
 			}
@@ -84,3 +109,8 @@
 		echo '<br/>Informacja developerska: '.$wyjatek.'<br/><br/>';
 	}
 ?>
+
+</div>
+<script src="js/lightbox-plus-jquery.js"></script>			<!-- Lightbox -->
+</body>
+</html>

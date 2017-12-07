@@ -1,3 +1,33 @@
+<!DOCTYPE HTML>
+<html lang = "pl">
+
+<head>
+
+	<meta charset = " utf-8 " />
+	<meta http-equiv = " X-UA-Compatible " content = " IE = edge, chrome 1 " />
+	<title> Sklep Internetowy - Rejestracja </title>
+	
+	<script src='https://www.google.com/recaptcha/api.js'></script>			
+
+	<style>
+		.blad
+		{
+			color : red;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+	</style>
+<link rel= "stylesheet" href= "style.css" type= "text/css" />
+</head>
+
+<body>
+<div id ="container">
+   <div id = 'logo'>
+		<img src='SCIANY/LOGO2.jpg'>
+   </div>
+	
+    <div id="rejestracja">
+
 <?php
 	session_start();	
 	
@@ -225,7 +255,6 @@
 				$rezultat->free();
 				$rezultat2->free();
 				unset($rezultat3);
-				$rezultat4->free();
 				unset($rezultat5);
 				
 				$polaczenie->close();
@@ -241,30 +270,7 @@
 	}
 ?>
 
-<!DOCTYPE HTML>
-<html lang = "pl">
 
-<head>
-
-	<meta charset = " utf-8 " />
-	<meta http-equiv = " X-UA-Compatible " content = " IE = edge, chrome 1 " />
-	<title> Sklep Internetowy - Rejestracja </title>
-
-	<script src='https://www.google.com/recaptcha/api.js'></script>			
-
-	<style>
-		.blad
-		{
-			color : red;
-			margin-top: 10px;
-			margin-bottom: 10px;
-		}
-	</style>
-
-</head>
-
-<body>
-    
 	<form method = "post">
 		
 		<b> Dane logowania: </b> <p>
@@ -520,7 +526,7 @@
 		<br/> <input type = "submit" value = "Utwórz konto" />
 		
 	</form>
-	
+	</div> </div>
 </body>
 </html>	   
 

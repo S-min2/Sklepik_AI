@@ -1,3 +1,21 @@
+<!DOCTYPE HTML>		
+<html lang = "pl">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome 1"/>
+<title> Sklep Internetowy </title>
+<link href="css/lightbox.css" rel="stylesheet">					<!-- Lightbox -->
+<link rel= "stylesheet" href= "style.css" type= "text/css" />
+</head>
+
+<body>
+
+	<div id = 'container'>
+	<div id = 'logo'>
+		<img src='ZDJECIA/SCIANY/LOGO2.jpg'>
+    </div>
+	<div id = 'zamowienie'>
+	
 <?php
 
 	require_once "connect.php";
@@ -86,9 +104,9 @@
 					unset($rezultat2);
 					$polaczenie -> close();	
 					
-					echo "<p>  &nbsp  &nbsp &nbsp  &nbsp <a href= 'zalogowany.php' > Powrót do sklepu </a>";
+					echo "<p>   <div class = 'button2'> <a href= 'zalogowany.php' > Powrót do sklepu </a> </div> &nbsp  &nbsp &nbsp  &nbsp";
 					echo " &nbsp  &nbsp  &nbsp  &nbsp  &nbsp  &nbsp";
-					echo "<a href= 'wyloguj.php' > Wyloguj </a>";
+					echo "<div class = 'button2'> <a href= 'wyloguj.php' > Wyloguj </a> </div>";
 				}
 			}
 		}
@@ -99,3 +117,9 @@
 		}
 			
 ?>
+
+</div>
+</div>
+</div>
+</body>
+</html>

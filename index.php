@@ -5,6 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome 1"/>
 <title> Sklep Internetowy </title>
 <link href="css/lightbox.css" rel="stylesheet">					<!-- Lightbox -->
+<link rel= "stylesheet" href= "style.css" type= "text/css" />
 </head>
 
 <?php
@@ -18,19 +19,35 @@
 ?>
 
 <body>
-   
+
+   <div id = 'logo'>
+		<img src='SCIANY/LOGO2.jpg'>
+   </div>
+
+   <div id = 'tabela'>
+	<div id = 'tabelaL'>
+   <div id = 'logowanie'> <br>
 	<form action = "logowanie.php" method = "post" >
 	
-	   Login: <br /> <input type = "text" name = "login" /> <br />
-	   Hasło: <br /> <input type = "password" name = "haslo" /> <br />
-	   <input type = "submit" value = "Zaloguj się" />
+	   &nbsp &nbsp &nbsp <b>Login:  <br/>  &nbsp &nbsp &nbsp &nbsp <input type = "text" name = "login" /> <br /> <br/>
+	   &nbsp &nbsp &nbsp	 Hasło:   <br/> &nbsp &nbsp &nbsp &nbsp <input type = "password" name = "haslo" /> </b> <br /> <br/>
+	   
+<?php
+	if(isset($_SESSION['blad_logowania']))  { echo $_SESSION['blad_logowania']; unset($_SESSION['blad_logowania']); echo "<br/>"; echo "<br/>"; }
+?>
+
+	&nbsp &nbsp &nbsp &nbsp  &nbsp  &nbsp  &nbsp  <input type = "submit" value = "Zaloguj się" />
 	</form>
-	
-	<b><p> <a href = "rejestracja.php" > Załóż konto </a> </br> </br>
+	<p>
+	<div class ='opcja'>
+	&nbsp <b> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <a href = "rejestracja.php" > Załóż konto </a> 
+	</div>
+	</div>
+	</br> </br>
 	
 <?php
-	if(isset($_SESSION['blad_logowania']))  { echo $_SESSION['blad_logowania']; unset($_SESSION['blad_logowania']); }
-	if(isset($_SESSION['blad_koszyk'])) { echo $_SESSION['blad_koszyk'];  unset($_SESSION['blad_koszyk']); }
+	
+	if(isset($_SESSION['blad_koszyk'])) { echo $_SESSION['blad_koszyk'];  unset($_SESSION['blad_koszyk']); echo "<br/>"; }
 	
 	require_once "connect.php";
 	mysqli_report(MYSQLI_REPORT_STRICT);		// wyłącz wyświetlanie błędów
@@ -52,12 +69,18 @@
 			{	
 				unset($rez); unset($rez2);
 			}
-			echo "<p> Czego potrzebujesz? <p/>";						
+			echo "<div id='menu'>";
+			echo "<p> &nbsp Czego potrzebujesz? <p/>";
 			WybierzKategorie();		
+			echo "</div>";
+			echo "</div>";  // tabelaL
 			if(isset($_GET['kat_id'])) { $kategoria_id = $_GET['kat_id']; unset($_GET['kat_id']); }
-			else {$kategoria_id = 0; }																	//echo "kategoria: ".$kategoria_id;
+			else {$kategoria_id = 0; }	
+			echo "<div id = 'tabelaR'>";
+			echo "<div id= 'produkty'>";
 			PokazProdukty($kategoria_id);
-			
+			echo "</div>";
+			echo "</div>";
 			$polaczenie->close();
 		}
 	}
@@ -78,7 +101,11 @@
 		if(!$rezultat1) throw new Exception($polaczenie -> error);
 		else
 		{	
-			echo "<a href= 'index.php?kat_id=0'> Strona główna </a><br/>";
+			
+			echo "<div class= 'opcja'>";
+			echo "<a href= 'index.php?kat_id=0'> Wszystkie produkty </a><br/>"; 
+			echo "</div>";
+			
 			$ile_kategorii = $rezultat1 -> num_rows;
 			while($wiersz = $rezultat1->fetch_assoc())
 			{
@@ -86,7 +113,9 @@
 				$kategoria_id = $wiersz['ID_KATEGORII']; 
 				$kategoria_nazwa = $wiersz['NAZWA'];
 				echo "<p>";
+				echo "<div class= 'opcja'>";
 				echo "<a href='index.php?kat_id=$kategoria_id'>$kategoria_nazwa</a>";
+				echo "</div>";
 			}
 		}	
 		$rezultat1->free();	
@@ -111,11 +140,12 @@
 		{
 			$ile_produktow = $rezultat1 -> num_rows;
 			
-			echo "<p>Znaleziono ".$ile_produktow." produktów";
+			echo " <p> &nbsp Znaleziono ".$ile_produktow." produktów";
+			echo "<table>";
 			
 			while($wiersz = $rezultat1 -> fetch_assoc())
 			{
-				echo "<div>";
+				
 				echo "<h2>";
 				$index = $wiersz['MODEL'];
 				
@@ -130,16 +160,22 @@
 					$zdjecie = 'no-foto.jpg';
 				}
 				
-				echo "<img src=ZDJECIA/mini/".$zdjecie.">";																
-				// nazwa -- link do strony produktu
-				echo " <a href='produkt.php?model=$index'>";
-				echo $wiersz['TYTUL']."<br>";
-				echo "</a>";
+				echo "<tr>";
+				echo "<td>";
 				
+				echo "&nbsp <img src=ZDJECIA/mini/".$zdjecie.">";		// nazwa -- link do strony produktu
+				echo "</td>"; echo "<td>";
+				echo "&nbsp &nbsp <a href='produkt.php?model=$index'>  ";
+				echo $wiersz['TYTUL']."<br>";
+				echo "</a> &nbsp &nbsp ";
 				// cena
 				echo $wiersz['CENA']."zł <br>";
-				echo "</div>";
+				echo "</td>";
+				echo "</tr>";
+				
 			}
+			echo "</table>";
+			
 			$rezultat1->free();
 		}
 	}
@@ -164,7 +200,7 @@
 	}
 	
 ?>
-	
+</div> 
 <script src="js/lightbox-plus-jquery.js"></script>			<!-- Lightbox -->
 
 </body>
